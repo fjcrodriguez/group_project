@@ -22,14 +22,33 @@ def fetch(url, delay=(2, 5)):
     html = BeautifulSoup(pagedata, "html.parser")
     return pagedata, html
 
-def parse_craigslist():
-    soup = fetch("https://sfbay.craigslist.org/search/rea?s=0&bathrooms=1&bedrooms=1")
+def parse_craigslist(url):
+    soup = fetch(url)
     i = 1
     for row in soup[1].find_all(class_="row"):
         pricetag = row.find_all(class_="price")
         if len(pricetag) > 0:
             print pricetag[0].text, i
             i += 1
+
+
+url_temp = 'http://www.city-data.com/city/%s.html'
+
+cities = ['New-York-New-York', 'Chicago-Illinois', 'Charleston-South-Carolina', 'Las Vegas-Nevada', 'Seattle-Washington', 'San-Francisco-California',
+           'Washington-District-of-Columbia', 'New-Orleans-Louisiana', 'Palm-Springs-California', 'San-Diego-California', 'St.-Louis-Missouri', 'Sedona-Arizona',
+          'Honolulu-Hawaii', 'Miami-Beach-Florida', 'Branson-Missouri', 'Boston-Massachusetts', 'Savannah-Georgia', 'Orlando-Florida', 'Portland-Oregon',
+          'Lahaina-Hawaii', 'Saint-Augustine-Florida', 'Nashville-Tennessee', 'Los-Angeles-California', 'San-Antonio-Texas', 'Austin, Texas']
+
+
+
+
+
+
+
+
+
+
+
 
 
 
