@@ -105,8 +105,8 @@ def parseHN():
 
 
 direccion, zipcode, prices, type, cities, bedrooms, bathrooms = parseHN()
-print direccion, zipcode, prices, type, cities, bedrooms, bathrooms
-
-print len(direccion), len(zipcode), len(prices), len(type), len(cities), len(bedrooms), len(bathrooms)
+# print direccion, zipcode, prices, type, cities, bedrooms, bathrooms
+#
+# print len(direccion), len(zipcode), len(prices), len(type), len(cities), len(bedrooms), len(bathrooms)
 
 
