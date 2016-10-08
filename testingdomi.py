@@ -3,7 +3,6 @@ from bs4 import BeautifulSoup
 import time
 import random
 import math
-import requests
 import re
 
 def fetch(url,delay=(2,5)):
@@ -25,39 +24,89 @@ def fetch(url,delay=(2,5)):
     soup = BeautifulSoup(html, 'html.parser')
     return (html,soup)
 
-#one way to do it but its not counting for empty data so the zip is incorrect
+
+# list = ['NY/New-York', 'IL/Chicago', 'SC/Charleston', 'NV/Las-Vegas', 'WA/Seattle', 'CA/San-Francisco', 'DC/Washington',
+#         'LA/New-Orleans', 'CA/Palm-Springs', 'CA/San-Diego', 'MO/Saint-Louis', 'AZ/Sedona', 'HI/Honolulu',
+#         'FL/Miami-Beach/agent-broker', 'MO/Branson', 'MA/Boston', 'GA/Savannah/', 'FL/Orlando/agent-broker',
+#         'OR/Portland', 'HI/Lahaina', 'FL/Saint-Augustine-Beach/agent-broker', 'TN/Nashville',
+#         'CA/Los-Angeles', 'TX/San-Antonio', 'TX/Austin']
+
+
+
+#THIS WORKS #one way to do it but its not counting for empty data so the zip is incorrect
 def parseHN():
-    i = 1
+    list = ['NY/New-York', 'IL/Chicago', 'SC/Charleston', 'NV/Las-Vegas', 'WA/Seattle', 'CA/San-Francisco',
+            'DC/Washington','LA/New-Orleans', 'CA/Palm-Springs', 'CA/San-Diego', 'MO/Saint-Louis', 'AZ/Sedona', 'HI/Honolulu',
+                    'FL/Miami-Beach/agent-broker', 'MO/Branson', 'MA/Boston', 'GA/Savannah/', 'FL/Orlando/agent-broker',
+                    'OR/Portland', 'HI/Lahaina', 'FL/Saint-Augustine-Beach/agent-broker', 'TN/Nashville',
+                    'CA/Los-Angeles', 'TX/San-Antonio', 'TX/Austin']
     prices = []
     bedrooms = []
     bathrooms = []
-    while i < 63:
-        page,html = fetch("http://www.homefinder.com/CA/San-Francisco/?page=%d" % i)
-        print i
-        for price in html.find_all(class_='price'):
-            prices.append(price.text.encode('ascii','ignore'))
-        for bed in html.find_all(class_='beds'):
-            if len(bed.text) is None:
-                bedrooms.append('--')
-            else:
-                bedrooms.append(bed.text.encode('ascii','ignore'))
-        for bath in html.find_all(class_='baths'):
-            bathrooms.append(bath.text.encode('ascii','ignore'))
-        i += 1
-    test = zip(prices, bedrooms, bathrooms)
-    return test
+    citystate = []
+    direccion = []
+    type = []
+    for i in range(len(list)):
+        page, html = fetch("http://www.homefinder.com/%s" % list[i])
+        totalads = ''
+        for item in html.find_all(class_='listingsFound'):
+            totalads = item.text.encode('ascii', 'ignore')
+        totalads = totalads.replace(',', '')
+        totalpages = [int(s) for s in totalads.split() if s.isdigit()]
+        totalpages = math.ceil(totalpages[0]/20.0)
+        print totalpages
+        j = 1
+        while j <= totalpages:
+            page, html = fetch("http://www.homefinder.com/%s/?page=%d" % (list[i], j))
+            for item in html.find_all(class_='resultsBands'):
+                if item.find(class_='price') is not None and item.find(class_='beds') is not None and item.find(class_='baths') is not None and item.find('span', {'itemprop':'name'}) is not None and item.find(class_='cityStZip') is not None:
+                    price = item.find(class_ ='price')
+                    price = price.text.encode('ascii', 'ignore')
+                    price = price.replace('$','')
+                    price = price.replace(',','')
+                    bedroom = item.find(class_='beds').text.encode('ascii', 'ignore')
+                    city = item.find(class_='cityStZip').text.encode('ascii','ignore')
+                    address = item.find('span',{'itemprop':'name'}).text.encode('ascii','ignore')
+                    bathroom = item.find(class_='baths').text.encode('ascii', 'ignore')
+                    direccion.append(address)
+                    citystate.append(city)
+                    prices.append(price)
+                    bedrooms.append(bedroom)
+                    bathrooms.append(bathroom)
+                    type.append('sale')
+            j += 1
 
-#different way to do it but still don't know how to divide the data
-def parseHN():
-    i = 1
-    data = []
-    while i < 63:
-        page,html = fetch("http://www.homefinder.com/CA/San-Francisco/?page=%d" % i)
-        print i
-        for item in html.find_all(class_= ['price','beds','baths']):
-            data.append(item.text.encode('ascii','ignore'))
-        i += 1
-    return data
+    prc = []
+    for i in range(len(prices)):
+        prc.append(re.findall('\d+', prices[i])[0])
 
-print parseHN()
+    zipcode = []
+    for i in citystate:
+        zipcode.append(i[-6:-1])
+
+    city = []
+    for i in citystate:
+        city.append(i.split(','))
+
+    cities = []
+    for i in city:
+        cities.append(i[0].strip())
+
+    totalbeds = []
+    for i in bedrooms:
+        totalbeds.append(i[0])
+
+    totalbaths = []
+    for i in bathrooms:
+        totalbaths.append(i[0])
+
+    # test = list(zip(citystate,prices, bedrooms, bathrooms))
+    return direccion, zipcode, prc, type, cities, totalbeds, totalbaths
+
+
+direccion, zipcode, prices, type, cities, bedrooms, bathrooms = parseHN()
+print direccion, zipcode, prices, type, cities, bedrooms, bathrooms
+
+print len(direccion), len(zipcode), len(prices), len(type), len(cities), len(bedrooms), len(bathrooms)
+
 
