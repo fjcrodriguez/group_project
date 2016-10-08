@@ -25,15 +25,6 @@ def fetch(url,delay=(2,5)):
     return (html,soup)
 
 
-# list = ['NY/New-York', 'IL/Chicago', 'SC/Charleston', 'NV/Las-Vegas', 'WA/Seattle', 'CA/San-Francisco', 'DC/Washington',
-#         'LA/New-Orleans', 'CA/Palm-Springs', 'CA/San-Diego', 'MO/Saint-Louis', 'AZ/Sedona', 'HI/Honolulu',
-#         'FL/Miami-Beach/agent-broker', 'MO/Branson', 'MA/Boston', 'GA/Savannah/', 'FL/Orlando/agent-broker',
-#         'OR/Portland', 'HI/Lahaina', 'FL/Saint-Augustine-Beach/agent-broker', 'TN/Nashville',
-#         'CA/Los-Angeles', 'TX/San-Antonio', 'TX/Austin']
-
-
-
-#THIS WORKS #one way to do it but its not counting for empty data so the zip is incorrect
 def parseHN():
     list = ['NY/New-York', 'IL/Chicago', 'SC/Charleston', 'NV/Las-Vegas', 'WA/Seattle', 'CA/San-Francisco',
             'DC/Washington','LA/New-Orleans', 'CA/Palm-Springs', 'CA/San-Diego', 'MO/Saint-Louis', 'AZ/Sedona', 'HI/Honolulu',
@@ -100,7 +91,6 @@ def parseHN():
     for i in bathrooms:
         totalbaths.append(i[0])
 
-    # test = list(zip(citystate,prices, bedrooms, bathrooms))
     return direccion, zipcode, prc, type, cities, totalbeds, totalbaths
 
 
