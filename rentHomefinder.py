@@ -92,6 +92,7 @@ def parseHN():
     for i in bathrooms:
         totalbaths.append(i[0])
 
+    type = ['Rent' for i in range(len(zipcode))]
 
     return direccion, zipcode, prc, type, cities, totalbeds, totalbaths
 
