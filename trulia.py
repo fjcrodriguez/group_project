@@ -36,11 +36,9 @@ def getSalesData():
             items = pagehtml.find_all('div', {'class': 'smlCol12 lrgCol8 ptm cardContainer'})
             for item in items:
                 citys.append(city[0].replace('_', ' '))
-                print city[0].replace('_', ' ')
                 rentbuy.append('buy')
                 link = item.a['href']
                 zipcode = link[-5:]
-                print zipcode
                 zipcodes.append(zipcode)
                 newURL = 'https://www.trulia.com' + link
                 newReq = urllib2.Request(newURL, headers={'User-Agent': "Resistance is futile"})
@@ -49,22 +47,17 @@ def getSalesData():
                 price = str(
                     newhtml.find('div', {'class': 'h2 typeReversed typeDeemphasize man pan noWrap'}).get_text()).strip()
                 prices.append(int(price.replace(',', '')[1:]))
-                print price.replace(',', '')[1:]
                 address = str(
                     newhtml.find('span',
                                  {'class': 'headingDoubleSuper h2 typeWeightNormal mvn ptn'}).get_text()).strip()
-                print address
                 addressList.append(address)
                 bedBath = item.find(class_="cardDetails man ptm phm")
                 numOfBed = bedBath.find(class_="iconBed").parent.text
-                print int(numOfBed[0])
                 numBed.append(int(numOfBed[0]))
                 numOfBath = bedBath.find(class_='iconBath').parent.text
-                print int(numOfBath[0])
                 numBath.append(int(numOfBath[0]))
     output = zip(citys, prices, addressList, rentbuy, zipcodes, numBed, numBath)
     return output
-
 
 
 
