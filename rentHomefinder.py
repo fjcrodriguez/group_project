@@ -94,10 +94,9 @@ def parseHN():
 
     type = ['Rent' for i in range(len(zipcode))]
 
-    return direccion, zipcode, prc, type, cities, totalbeds, totalbaths
+    return zip(direccion, zipcode, prc, type, cities, totalbeds, totalbaths)
 
 
-direccion, zipcode, prices, type, cities, bedrooms, bathrooms = parseHN()
 # print direccion, zipcode, prices, type, cities, bedrooms, bathrooms
 #
 # print len(direccion), len(zipcode), len(prices), len(type), len(cities), len(bedrooms), len(bathrooms)
