@@ -5,25 +5,28 @@ import math
 def rentcomData():
     baseUrl = 'http://www.rent.com/%s/%s/apartments_condos_houses_townhouses%s'
 
-    cityState = [('new-york', 'new-york'), ('illinois', 'chicago'), ('south-carolina', 'charleston'),
-                 ('nevada', 'las-vegas'),
-                 ('washington', 'seattle'), ('california', 'san-francisco'), ('district-of-columbia', 'washington'),
-                 ('louisiana', 'new-orleans'), ('california', 'palm-springs'), ('california', 'san-diego'),
-                 ('missouri', 'saint-louis'),
-                 ('arizona', 'sedona'), ('hawaii', 'honolulu'), ('florida', 'miami-beach'), ('missouri', 'branson'),
-                 ('massachusetts', 'boston'), ('georgia', 'savannah'), ('florida', 'orlando'), ('oregon', 'portland'),
-                 ('hawaii', 'lahaina'), ('florida', 'saint-augustine'), ('tennessee', 'nashville'),
-                 ('california', 'los-angeles'),
-                 ('texas', 'san-antonio'), ('texas', 'austin')]
+    # cityState = [('new-york', 'new-york'), ('illinois', 'chicago'), ('south-carolina', 'charleston'),
+    #              ('nevada', 'las-vegas'),
+    #              ('washington', 'seattle'), ('california', 'san-francisco'), ('district-of-columbia', 'washington'),
+    #              ('louisiana', 'new-orleans'), ('california', 'palm-springs'), ('california', 'san-diego'),
+    #              ('missouri', 'saint-louis'),
+    #              ('arizona', 'sedona'), ('hawaii', 'honolulu'), ('florida', 'miami-beach'), ('missouri', 'branson'),
+    #              ('massachusetts', 'boston'), ('georgia', 'savannah'), ('florida', 'orlando'), ('oregon', 'portland'),
+    #              ('hawaii', 'lahaina'), ('florida', 'saint-augustine'), ('tennessee', 'nashville'),
+    #              ('california', 'los-angeles'),
+    #              ('texas', 'san-antonio'), ('texas', 'austin')]
+
+    cityState = [('new-york', 'new-york')]
+
     bedroom = ['_1-bedroom', '_2-bedroom', '_3-bedroom']
 
-    citys = ['City']
-    prices = ['Price']
-    addressList = ['Address']
-    rentbuy = ['Type']
-    zipcode = ['Zipcode']
-    numBed = ['Number of Bedrooms']
-    numBath = ['Number of Bathrooms']
+    citys = []
+    prices = []
+    addressList = []
+    type = []
+    zipcode = []
+    numBed = []
+    numBath = []
     for city in cityState:
         for bed in bedroom:
             URL = baseUrl % (city[0], city[1], bed)
@@ -35,7 +38,7 @@ def rentcomData():
                 pageTotal = math.ceil(int(html.find('span', {'class': 'total-listings-count'}).get_text()) / 20)
             else:
                 pageTotal = 1
-            for i in range(int(pageTotal)):
+            for i in range(5):
                 newURL = URL + '?page=' + str(i + 1)
                 newReq = urllib2.Request(newURL, headers={'User-Agent': "Resistance is futile"})
                 response = urllib2.urlopen(newReq)
@@ -51,7 +54,7 @@ def rentcomData():
                         else:
                             prices.append(int(price[1:price.index(' ')]))
                         citys.append(city[1])
-                        rentbuy.append('rent')
+                        type.append('Rent')
                         link = item.a['href']
                         res = urllib2.urlopen('http://www.rent.com' + link)
                         ht = BeautifulSoup(res, 'html.parser')
@@ -63,5 +66,5 @@ def rentcomData():
                         numBed.append(int(numOfBed[0]))
                         numOfBath = str(item.find('span', {'class': 'prop-baths bullet-separator'}).get_text())
                         numBath.append(int(numOfBath[0]))
-    output = zip(addressList, zipcode, prices, rentbuy, citys, numBed, numBath)
+    output = zip(addressList, zipcode, prices, type, citys, numBed, numBath)
     return output

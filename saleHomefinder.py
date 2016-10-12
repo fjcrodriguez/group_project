@@ -15,7 +15,7 @@ def fetch(url,delay=(2,5)):
         request = urllib2.Request(url)
         response = urllib2.urlopen(request)
     except ValueError as e:
-        print str(e)
+        #print str(e)
         return '', BeautifulSoup('', "html.parser")
     except:  # toss out any other issue
         return '', BeautifulSoup('', "html.parser")
@@ -26,11 +26,13 @@ def fetch(url,delay=(2,5)):
 
 
 def parseHN():
-    list = ['NY/New-York', 'IL/Chicago', 'SC/Charleston', 'NV/Las-Vegas', 'WA/Seattle', 'CA/San-Francisco',
-            'DC/Washington','LA/New-Orleans', 'CA/Palm-Springs', 'CA/San-Diego', 'MO/Saint-Louis', 'AZ/Sedona', 'HI/Honolulu',
-                    'FL/Miami-Beach/agent-broker', 'MO/Branson', 'MA/Boston', 'GA/Savannah/', 'FL/Orlando/agent-broker',
-                    'OR/Portland', 'HI/Lahaina', 'FL/Saint-Augustine-Beach/agent-broker', 'TN/Nashville',
-                    'CA/Los-Angeles', 'TX/San-Antonio', 'TX/Austin']
+    # list = ['NY/New-York', 'IL/Chicago', 'SC/Charleston', 'NV/Las-Vegas', 'WA/Seattle', 'CA/San-Francisco',
+    #         'DC/Washington','LA/New-Orleans', 'CA/Palm-Springs', 'CA/San-Diego', 'MO/Saint-Louis', 'AZ/Sedona', 'HI/Honolulu',
+    #                 'FL/Miami-Beach/agent-broker', 'MO/Branson', 'MA/Boston', 'GA/Savannah/', 'FL/Orlando/agent-broker',
+    #                 'OR/Portland', 'HI/Lahaina', 'FL/Saint-Augustine-Beach/agent-broker', 'TN/Nashville',
+    #                 'CA/Los-Angeles', 'TX/San-Antonio', 'TX/Austin']
+    list = ['NY/New-York']
+
     prices = []
     bedrooms = []
     bathrooms = []
@@ -45,9 +47,9 @@ def parseHN():
         totalads = totalads.replace(',', '')
         totalpages = [int(s) for s in totalads.split() if s.isdigit()]
         totalpages = math.ceil(totalpages[0]/20.0)
-        print totalpages
+        #print totalpages
         j = 1
-        while j <= totalpages:
+        while j <= 5:
             page, html = fetch("http://www.homefinder.com/%s/?page=%d" % (list[i], j))
             for item in html.find_all(class_='resultsBands'):
                 if item.find(class_='price') is not None and item.find(class_='beds') is not None and item.find(class_='baths') is not None and item.find('span', {'itemprop':'name'}) is not None and item.find(class_='cityStZip') is not None:

@@ -22,24 +22,31 @@ def fetch(url, delay=(2, 5)):
     html = BeautifulSoup(pagedata, "html.parser")
     return pagedata, html
 
-def parse_craigslist(url):
+def parseCityData(url):
     soup = fetch(url)
-    i = 1
-    for row in soup[1].find_all(class_="row"):
-        pricetag = row.find_all(class_="price")
-        if len(pricetag) > 0:
-            print pricetag[0].text, i
-            i += 1
+    citydata = soup[1].find_all(class_='median-income')
+    tabledata = citydata[0].find_all(class_='hgraph')
+    income = tabledata[0].find_all(class_='a')[0].nextSibling
+    return income
 
 
-url_temp = 'http://www.city-data.com/city/%s.html'
-
-cities = ['New-York-New-York', 'Chicago-Illinois', 'Charleston-South-Carolina', 'Las Vegas-Nevada', 'Seattle-Washington', 'San-Francisco-California',
-           'Washington-District-of-Columbia', 'New-Orleans-Louisiana', 'Palm-Springs-California', 'San-Diego-California', 'St.-Louis-Missouri', 'Sedona-Arizona',
-          'Honolulu-Hawaii', 'Miami-Beach-Florida', 'Branson-Missouri', 'Boston-Massachusetts', 'Savannah-Georgia', 'Orlando-Florida', 'Portland-Oregon',
-          'Lahaina-Hawaii', 'Saint-Augustine-Florida', 'Nashville-Tennessee', 'Los-Angeles-California', 'San-Antonio-Texas', 'Austin, Texas']
 
 
+def getMedianIncomes():
+    cities = ['New-York-New-York', 'Chicago-Illinois', 'Charleston-South-Carolina', 'Las-Vegas-Nevada',
+              'Seattle-Washington', 'San-Francisco-California',
+              'Washington-District-of-Columbia', 'New-Orleans-Louisiana', 'Palm-Springs-California',
+              'San-Diego-California', 'St.-Louis-Missouri', 'Sedona-Arizona',
+              'Honolulu-Hawaii', 'Miami-Beach-Florida', 'Branson-Missouri', 'Boston-Massachusetts', 'Savannah-Georgia',
+              'Orlando-Florida', 'Portland-Oregon',
+              'Lahaina-Hawaii', 'St.-Augustine-Florida', 'Nashville-Davidson-Tennessee', 'Los-Angeles-California',
+              'San-Antonio-Texas', 'Austin-Texas']
+
+    median_incomes = []
+    for city in cities:
+        url = 'http://www.city-data.com/city/%s.html' % city
+        median_income = parseCityData(url)
+        median_incomes.append((city, median_income))
 
 
 
